@@ -61,11 +61,12 @@ class Pianeta:
     
 
 
-pianeta1 = Pianeta('Marte', {'acqua':150, 'terra': 20})
+pianeta1 = Pianeta('Marte', {'acqua':120, 'terra': 20})
 pianeta2 = Pianeta('Giove', {'vino': 20, 'birra':30, 'acqua':2})
 
 astro = Astronave.astronave_standard()
 astro.esplora(pianeta2)
+astro.esplora(pianeta1)
 
 for key, value in astro.risorse_raccolte.items():
     print(f"{key}: {value}")
