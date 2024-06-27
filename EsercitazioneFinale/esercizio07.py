@@ -49,11 +49,11 @@ class CorpoCeleste:
     adiacenti: dict = field(default_factory=dict)
     
     def aggiungi_collegamento(self, nodo_altro, distanza):
-        self.adiacenti[nodo_altro] = distanza
+        self.adiacenti[nodo_altro.nome] = distanza
     
     def rimuovi_collegamento(self, nodo_altro):
-        if nodo_altro in self.adiacenti:
-            del self.adiacenti[nodo_altro]
+        if nodo_altro.nome in self.adiacenti:
+            del self.adiacenti[nodo_altro.nome]
         else:
             raise KeyError
             
@@ -66,15 +66,20 @@ class MappaStellare:
     corpi_celesti: dict = field(default_factory=dict)
     
     def aggiungi_corpo_celeste(self, nome):
-        self.corpi_celesti[nome] = CorpoCeleste(nome)
+        corpo_cel = CorpoCeleste(nome)
+        self.corpi_celesti[nome] = corpo_cel
+        return corpo_cel #perché così posso accedere all'istanza creata senza entrare in self.corpi_celesti
     
     def rimuovi_corpo_celeste(self, nome):
         if nome in self.corpi_celesti:
             for corpo in self.corpi_celesti.values():
-                corpo.rimuovi_collegamento(self.corpi_celesti[nome])
+                if nome in corpo.adiacenti:
+                    # Correctly call rimuovi_collegamento() with the name of the body to remove
+                    corpo.rimuovi_collegamento(CorpoCeleste(nome))
             del self.corpi_celesti[nome]
         else:
             raise KeyError
+
     
     def aggiungi_percorso(self, partenza, arrivo, distanza):
         if partenza in self.corpi_celesti and arrivo in self.corpi_celesti:
@@ -96,3 +101,6 @@ ms.aggiungi_percorso("cc1", "cc3", 4)
 
 print(ms)
 
+ms.rimuovi_corpo_celeste("cc2")
+
+print(ms)
